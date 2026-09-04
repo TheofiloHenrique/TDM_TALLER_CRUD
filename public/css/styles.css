@@ -90,7 +90,7 @@ th {
     text-decoration: underline;
 }
 
-/* Estilos de Tarjetas (Cards) para catalog.html */
+/* Tarjetas para catalog.html */
 .catalog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
