@@ -38,9 +38,11 @@ function handleSneakersRoutes(req, res) {
         let body = "";
         req.on("data", chunk => body += chunk);
         req.on("end", () => {
-            const sneakers = 'sneakers = readData()';
+            const sneakers = readData();
             const nuevo = JSON.parse(body);
-            nuevo.id = Date.now();
+            nuevo.id = sneakers.length > 0 
+            ? Math.max(...sneakers.map(s => s.id)) + 1
+            : 1;
             sneakers.push(nuevo);
             writeData(sneakers);
             res.end(JSON.stringify(nuevo));

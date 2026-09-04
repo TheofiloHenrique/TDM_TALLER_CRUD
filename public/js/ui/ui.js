@@ -7,6 +7,7 @@ export function renderSneakers(sneakers, tableBody) {
             <td>${sneaker.name}</td>
             <td>${sneaker.description || ""}</td>
             <td>${sneaker.category}</td>
+            <td>${sneaker.price}</td>
             <td>${sneaker.stock}</td>
             <td>${sneaker.image}</td>
             <td>

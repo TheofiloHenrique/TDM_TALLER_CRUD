@@ -3,9 +3,9 @@
     "id": 1,
     "name": "Air Jordan 1 Retro High 'Lost & Found'",
     "description": "Edición icónica inspirada en el stock de las tiendas de 1985 con acabado vintage de fábrica y cuero de alta calidad.",
-    "price": 1250000,
+    "price": "10000",
     "category": "Jordan",
-    "stock": 5,
+    "stock": "5",
     "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400"
   },
   {

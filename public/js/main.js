@@ -1,5 +1,5 @@
-import { getAllSneakers, getSneaker , createSneaker , deleteSneaker , updateSneaker } from "./services/api";
-import { resetForm , fillForm , renderSneakers } from "./ui/ui";
+import { getAllSneakers, getSneaker , createSneaker , deleteSneaker , updateSneaker } from "./services/api.js";
+import { resetForm , fillForm , renderSneakers } from "./ui/ui.js";
 
 const tableBody = document.getElementById("sneakersTable");
 const form = document.getElementById("sneakerForm");
@@ -44,6 +44,10 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = form.querySelector("#name").value;
     const description = form.querySelector("#description").value;
+    const category = form.querySelector("#category").value;
+    const price = form.querySelector("#price").value;
+    const stock = form.querySelector("#stock").value;
+    const image = form.querySelector("#image").value;
 
     if(!name) {
         alert("El campo nombre es obligatorio");
@@ -52,10 +56,10 @@ form.addEventListener("submit", async (e) => {
 
     try {
         if(editId) {
-            await updateSneaker(editId, { name, description });
+            await updateSneaker(editId, { name, description , category , price , stock , image });
             editId = null;
         } else {
-            await createSneaker({ name, description });
+            await createSneaker({ name, description , category , price , stock , image});
         }
 
         resetForm(form, submitBtn);
