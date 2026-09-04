@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "name": "Air Jordan 1 Retro High 'Lost & Found'",
+    "description": "Edición icónica inspirada en el stock de las tiendas de 1985 con acabado vintage de fábrica y cuero de alta calidad.",
+    "price": 1250000,
+    "category": "Jordan",
+    "stock": 5,
+    "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400"
+  },
+  {
+    "id": 2,
+    "name": "Adidas Yeezy Boost 350 V2 'Zebra'",
+    "description": "Diseño vanguardista con patrón Primeknit monocromático, franja lateral distintiva SPLY-350 y suela translúcida con amortiguación Boost.",
+    "price": 980000,
+    "category": "Yeezy",
+    "stock": 8,
+    "image": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=400"
+  },
+  {
+    "id": 3,
+    "name": "Nike Dunk Low 'Panda'",
+    "description": "El clásico versátil de perfil bajo con bloques de color blanco y negro, perfecto para cualquier outfit urbano y uso diario.",
+    "price": 550000,
+    "category": "Nike Dunk",
+    "stock": 12,
+    "image": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400"
+  }
+]
