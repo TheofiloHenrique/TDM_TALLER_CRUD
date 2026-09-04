@@ -1,7 +1,7 @@
 const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
-const handleItemsRoutes = require("./routes/items");
+const handleSneakersRoutes = require("./routes/sneakers");
 
 const PORT = 3000;
 const PUBLIC_PATH = path.join(__dirname, "..", "public");
@@ -20,25 +20,25 @@ const server = http.createServer(async (req, res) => {
     // Imprimir peticiones
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
 
-    // Rutas API (items.js)
-    if (handleItemsRoutes(req, res)) return;
+    //Rutas API (Sneakers.js)
+    if (handleSneakersRoutes(req, res)) return;
 
-    // Archivos estáticos
+    //Archivos estáticos
     try {
-        // Saca la ruta y la extensión de la URL según lo que venga en la petición
+        //Saca la ruta y la extensión de la URL según lo que venga en la petición
         const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
         let pathname = parsedUrl.pathname === "/" ? "/index.html" : parsedUrl.pathname;
         const ext = path.extname(pathname);
         const fullPath = path.join(PUBLIC_PATH, pathname);
         
-        // Tipo de contenido según extensión y contenido desde la ruta obtenida
+        //Tipo de contenido según extensión y contenido desde la ruta obtenida
         const contentType = MIME_TYPES[ext] || "text/plain";
         const content = await fs.readFile(fullPath);
 
         res.writeHead(200, { "Content-Type": contentType });
         res.end(content);
     } catch (err) {
-        // Captura el error y lo muestra
+        //Captura el error y lo muestra
         const statusCode = err.code === "ENOENT" ? 404 : err.statusCode || 500;
 
         res.writeHead(statusCode, { "Content-Type": "text/plain" });
