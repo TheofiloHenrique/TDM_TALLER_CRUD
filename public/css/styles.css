@@ -64,6 +64,13 @@ th {
     background: #f2f2f2;
 }
 
+.sneaker-thumb{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
 /* Navbar */
 .navbar {
     background: #333;
@@ -98,7 +105,7 @@ th {
     margin-top: 20px;
 }
 
-.item-card {
+.sneaker-card {
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -108,7 +115,7 @@ th {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.item-card:hover {
+.sneaker-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
@@ -127,7 +134,7 @@ th {
     transition: transform 0.5s ease;
 }
 
-.item-card:hover .card-image-wrapper img {
+.sneaker-card:hover .card-image-wrapper img {
     transform: scale(1.08);
 }
 

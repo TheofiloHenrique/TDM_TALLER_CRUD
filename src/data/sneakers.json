@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Air Jordan 1 Retro High 'Lost & Found'",
+    "name": "Air Jordan 1Retro High 'Lost & Found'",
     "description": "Edición icónica inspirada en el stock de las tiendas de 1985 con acabado vintage de fábrica y cuero de alta calidad.",
     "price": "10000",
     "category": "Jordan",
@@ -25,5 +25,14 @@
     "category": "Nike Dunk",
     "stock": 12,
     "image": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400"
+  },
+  {
+    "name": "Adidas Boost Run",
+    "description": "El Adidas Boost Run es un tenis desarrollado para ofrecer máximo confort, amortiguación y retorno de energía durante carreras y actividades diarias. Con un diseño deportivo moderno y la tecnología Boost, proporciona una experiencia de uso suave y receptiva.",
+    "category": "Boost",
+    "price": "231313",
+    "stock": "7",
+    "image": "https://assets.adidas.com/images/h_2000,f_auto,q_auto,fl_lossy,c_fill,g_auto/9b495d15560e4238ada7b4c51d5abc35_9366/Tenis_BOOST_RUN_M_Preto_KJ0966_01_00_standard.jpg",
+    "id": 4
   }
 ]

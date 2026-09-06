@@ -9,7 +9,7 @@ export function renderSneakers(sneakers, tableBody) {
             <td>${sneaker.category}</td>
             <td>${sneaker.price}</td>
             <td>${sneaker.stock}</td>
-            <td>${sneaker.image}</td>
+            <td><img src = "${sneaker.image}" alt = "${sneaker.name}" class = "sneaker-thumb"</td>
             <td>
                 <button class="btn-edit" data-id="${sneaker.id}">Editar</button>
                 <button class="btn-delete" data-id="${sneaker.id}">Eliminar</button>

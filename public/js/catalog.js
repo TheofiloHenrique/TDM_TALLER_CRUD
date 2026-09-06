@@ -4,47 +4,48 @@ const catalogContainer = document.getElementById("catalogContainer");
 const detailModal = document.getElementById("detailModal");
 const closeModalBtn = document.getElementById("closeModal");
 
-// Elementos del modal para mostrar los detalles del sneaker
+//Elementos del modal para mostrar los detalles del sneaker
 const modalName = document.getElementById("modalName");
+const modalImg = document.getElementById("modalImg");
 const modalCategory = document.getElementById("modalCategory");
 const modalDescription = document.getElementById("modalDescription");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
 
-// Cargar y renderizar las tarjetas del catálogo dinámicamente
+//Cargar y renderizar las tarjetas del catálogo dinámicamente
 async function loadCatalog() {
     try {
-        const items = await getAllSneakers();
-        renderCatalogCards(items);
+        const sneakers = await getAllSneakers();
+        renderCatalogCards(sneakers);
     } catch (err) {
         console.error("Error cargando el catálogo:", err);
         alert("No se pudieron cargar los sneakers del catálogo.");
     }
 }
 
-// Función para pintar las tarjetas en el DOM
-function renderCatalogCards(items) {
+//Función para pintar las tarjetas en el DOM
+function renderCatalogCards(sneakers) {
     catalogContainer.innerHTML = "";
     
-    items.forEach(item => {
+    sneakers.forEach(sneaker => {
         const card = document.createElement("div");
-        card.className = "item-card";
+        card.className = "sneaker-card";
         card.innerHTML = `
             <div class="card-image-wrapper">
-                <img src="${item.image}" alt="${item.name}">
+                <img src="${sneaker.image}" alt="${sneaker.name}">
             </div>
             <div class="card-content">
-                <span class="card-category">${item.category}</span>
-                <h3>${item.name}</h3>
-                <p class="card-price">$ ${item.price}</p>
-                <button class="btn-detail" data-id="${item.id}">Ver Detalle</button>
+                <span class="card-category">${sneaker.category}</span>
+                <h3>${sneaker.name}</h3>
+                <p class="card-price">$ ${sneaker.price}</p>
+                <button class="btn-detail" data-id="${sneaker.id}">Ver Detalle</button>
             </div>
         `;
         catalogContainer.appendChild(card);
     });
 }
 
-// Evento de delegación para abrir el modal al hacer clic en "Ver Detalle"
+//Evento de delegación para abrir el modal al hacer clic en "Ver Detalle"
 catalogContainer.addEventListener("click", async (e) => {
     const btn = e.target.closest("button");
     if(!btn || !btn.classList.contains("btn-detail")) return;
@@ -52,14 +53,15 @@ catalogContainer.addEventListener("click", async (e) => {
     const id = Number(btn.dataset.id);
 
     try {
-        const item = await getSneaker(id);
+        const sneaker = await getSneaker(id);
         
-        // Rellenar el modal con la información del sneaker consultado por ID
-        modalName.textContent = item.name;
-        modalCategory.textContent = `Categoría: ${item.category}`;
-        modalDescription.textContent = item.description;
-        modalPrice.textContent = `Precio: $ ${item.price}`;
-        modalStock.textContent = `Stock disponible: ${item.stock}`;
+        //Rellenar el modal con la información del sneaker consultado por ID
+        modalName.textContent = sneaker.name;
+        modalImg.src = sneaker.image;
+        modalCategory.textContent = `Categoría: ${sneaker.category}`;
+        modalDescription.textContent = sneaker.description;
+        modalPrice.textContent = `Precio: $ ${sneaker.price}`;
+        modalStock.textContent = `Stock disponible: ${sneaker.stock}`;
 
         // Mostrar el modal
         detailModal.style.display = "flex";
@@ -69,7 +71,7 @@ catalogContainer.addEventListener("click", async (e) => {
     }
 });
 
-// Eventos para cerrar el modal
+//Eventos para cerrar el modal
 closeModalBtn.addEventListener("click", () => {
     detailModal.style.display = "none";
 });
@@ -80,5 +82,4 @@ window.addEventListener("click", (e) => {
     }
 });
 
-// Inicializar la carga del catálogo al abrir la vista
 loadCatalog();
