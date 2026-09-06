@@ -205,3 +205,11 @@ th {
 #closeModal:hover {
     color: #000;
 }
+/* Estilos para la imagen del modal */
+#modalImg {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
