@@ -1,0 +1,44 @@
+{
+  "name": "tdm_taller_crud",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/TheofiloHenrique/TDM_TALLER_CRUD#readme",
+  "bugs": {
+    "url": "https://github.com/TheofiloHenrique/TDM_TALLER_CRUD/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheofiloHenrique/TDM_TALLER_CRUD.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -n API,CSS -c cyan,magenta \"npm:dev:server\" \"npm:dev:css\"",
+        "dev:server": "nodemon src/server.js",
+        "dev:css": "@tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --watch",
+        "build": "@tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --minify",
+        "start": "node src/server.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write ."
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "lowdb": "^7.0.1",
+    "morgan": "^1.12.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.7",
+    "tailwindcss": "^4.3.3"
+  }
+}
