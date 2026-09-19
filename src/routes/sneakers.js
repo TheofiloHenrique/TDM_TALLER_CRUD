@@ -1,98 +1,79 @@
-const fs = require("fs");
-const path = require("path");
+import { Router } from "express";
+import { getAllSneakers, findSneaker, insertSneaker, modifySneaker, removeSneaker } from "../db/db.js";
 
-const DATA_PATH = path.join(__dirname, "..", "data", "sneakers.json");
+/**
+ * Un Router de Express es un "mini servidor" que luego montamos en /api/sneakers.
+ * Compara esto con el archivo anterior: ya no parseamos req.url a mano,
+ * ni acumulamos el body con req.on("data"), ni escribimos las cabeceras.
+ */
+const router = Router();
 
-function readData() {
-    return JSON.parse(fs.readFileSync(DATA_PATH, "utf8"));
-}
+/**
+ * Middleware propio: valida que el :id de la URL sea un número.
+ * Al registrarlo con router.param() se ejecuta en TODAS las rutas que usen :id.
+ */
+router.param("id", (req, res, next, value) => {
+    const id = Number(value);
+    if (!Number.isInteger(id)) {
+        return res.status(400).json({ error: "El id debe ser un número entero" });
+    }
+    req.sneakerId = id;
+    next();
+});
 
-function writeData(data) {
-    fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-}
+// GET /api/sneakers
+router.get("/", (req, res) => {
+    res.json(getAllSneakers());
+});
 
-function handleSneakersRoutes(req, res) {
-    if (!req.url.startsWith("/api/sneakers")) return false;
+// GET /api/sneakers/:id
+router.get("/:id", (req, res) => {
+    const sneaker = findSneaker(req.sneakerId);
+    if (!sneaker) return res.status(404).json({ error: "sneaker no encontrado" });
+    res.json(sneaker);
+});
 
-    res.setHeader("Content-Type", "application/json");
+// POST /api/sneakers
+router.post("/", async (req, res) => {
+    const { name, description, category, price, stock, image } = req.body ?? {};
 
-    //GET /api/sneakers
-    if (req.method === "GET" && req.url === "/api/sneakers") {
-        res.end(JSON.stringify(readData()));
-        return true;
+    if (!name || !name.trim()) {
+        return res.status(400).json({ error: "El campo 'name' es obligatorio" });
     }
 
-    //GET /api/sneakers/:id
-    if (req.method === "GET" && req.url.startsWith("/api/sneakers/")) {
-        const id = parseInt(req.url.split("/").pop());
+    const nuevo = await insertSneaker({ name: name.trim(), description: description?.trim(), 
+        category: category.trim() ?? "",price: price, stock: stock, image: image ?? "" });
+    res.status(201).json(nuevo);
+});
 
-        if (!isNaN(id)) {
-            const item = readData().find(i => i.id === id);
-            res.end(JSON.stringify(item || { error: "No encontrado" }));
-            return true;
-        }
+// PUT /api/sneakers/:id
+router.put("/:id", async (req, res) => {
+    const { name, description, category, price, stock, image } = req.body ?? {};
+
+    if (name !== undefined && !name.trim()) {
+        return res.status(400).json({ error: "El campo 'name' no puede quedar vacío" });
     }
 
-    //POST /api/sneakers
-    if (req.method === "POST" && req.url === "/api/sneakers") {
-        let body = "";
-        req.on("data", chunk => body += chunk);
-        req.on("end", () => {
-            const sneakers = readData();
-            const nuevo = JSON.parse(body);
-            nuevo.id = sneakers.length > 0 
-            ? Math.max(...sneakers.map(s => s.id)) + 1
-            : 1;
-            sneakers.push(nuevo);
-            writeData(sneakers);
-            res.end(JSON.stringify(nuevo));
-        });
-        return true;
-    }
+    // Solo mandamos los campos que vinieron en el body: así un PUT con
+    // { description } no borra el name que ya tenía el sneaker.
+    const changes = {};
+    if (name !== undefined) changes.name = name.trim();
+    if (description !== undefined) changes.description = description.trim();
+    if (category !== undefined) changes.category = category.trim();
+    if (price !== undefined) changes.price = price.trim();
+    if (stock !== undefined) changes.stock = stock;
+    if (image !== undefined) changes.image = image;
 
-    //PUT /api/sneakers/:id
-    if (req.method === "PUT" && req.url.startsWith("/api/sneakers/")) {
-        const id = parseInt(req.url.split("/").pop());
+    const actualizado = await modifySneaker(req.sneakerId, changes);
+    if (!actualizado) return res.status(404).json({ error: "Sneaker no encontrado" });
+    res.json(actualizado);
+});
 
-        if (!isNaN(id)) {
-            let body = "";
-            req.on("data", chunk => body += chunk);
-            req.on("end", () => {
-                let sneakers = readData();
-                const idx = sneakers.findIndex(i => i.id === id);
+// DELETE /api/sneakers/:id
+router.delete("/:id", async (req, res) => {
+    const eliminado = await removeSneaker(req.sneakerId);
+    if (!eliminado) return res.status(404).json({ error: "Sneaker no encontrado" });
+    res.json({ mensaje: "Sneaker eliminado", id: req.sneakerId });
+});
 
-                if (idx >= 0) {
-                    const updated = { ...sneakers[idx], ...JSON.parse(body), id };
-                    sneakers[idx] = updated;
-                    writeData(sneakers);
-                    res.end(JSON.stringify(updated));
-                } else {
-                    res.end(JSON.stringify({ error: "No encontrado" }));
-                }
-            });
-            return true;
-        }
-    }
-
-    //DELETE /api/sneakers/:id
-    if (req.method === "DELETE" && req.url.startsWith("/api/sneakers/")) {
-        const id = parseInt(req.url.split("/").pop());
-
-        if (!isNaN(id)) {
-            let sneakers = readData();
-            const newsneakers = sneakers.filter(i => i.id !== id);
-
-            if (newsneakers.length !== sneakers.length) {
-                writeData(newsneakers);
-                res.end(JSON.stringify({ mensaje: "Eliminado" }));
-            } else {
-                res.end(JSON.stringify({ error: "No encontrado" }));
-            }
-            return true;
-        }
-    }
-
-    return false;
-}
-
-module.exports = handleSneakersRoutes;
+export default router;

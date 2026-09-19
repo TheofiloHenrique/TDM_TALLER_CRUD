@@ -1,45 +1,52 @@
 const API_URL = "/api/sneakers";
 
-//Creando un tenis (POST en "/api/sneakers")
-export async function createSneaker(data) {
-    const res = await fetch(API_URL, {
+// Cabecera reutilizada por POST y PUT
+const JSON_HEADERS = { "Content-Type": "application/json" };
+
+async function request(url, options) {
+    
+    const res = await fetch(url, options);
+
+    if (!res.ok) {
+        
+        let message = `Error ${res.status}`;
+        
+        try {
+            const body = await res.json();
+            if (body.error) message = body.error;
+        } catch {
+            // La respuesta no era JSON (ej. estamos sin conexión): dejamos el mensaje genérico.
+        }
+        throw new Error(message);
+    }
+
+    return res.json();
+}
+
+export function getAllSneakers() {
+    return request(API_URL);
+}
+
+export function getSneaker(id) {
+    return request(`${API_URL}/${id}`);
+}
+
+export function createSneaker(data) {
+    return request(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: JSON_HEADERS,
         body: JSON.stringify(data)
     });
-    if (!res.ok) throw new Error("Error al crear el tenis");
-    return res.json();
 }
 
-//Buscando todos los tenis ( GET en "/api/sneakers")
-export async function getAllSneakers() {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("Error al buscar todos los tenis");
-    return res.json();
-}
-
-//Buscando un par de tenis específico por su ID (GET en "/api/sneakers/{id}")
-export async function getSneaker(id) {
-    const res = await fetch(`${API_URL}/${id}`);
-    if (!res.ok) throw new Error("No se encontró el tenis específico");
-    return res.json();
-}
-
-//Actualizar un tenis específico por su ID (PUT en "/api/sneakers/{id}")
-export async function updateSneaker(id, data) {
-    const res = await fetch(`${API_URL}/${id}`, {
+export function updateSneaker(id, data) {
+    return request(`${API_URL}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: JSON_HEADERS,
         body: JSON.stringify(data)
     });
-    if (!res.ok) throw new Error("Error al actualizar el tenis");
-    return res.json();
 }
 
-
-//Excluyendo un tenis por su ID (DELETE en "/api/sneakers/{id}")
-export async function deleteSneaker(id) {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error("Error al eliminar el tenis");
-    return res.json();
+export function deleteSneaker(id) {
+    return request(`${API_URL}/${id}`, { method: "DELETE" });
 }
