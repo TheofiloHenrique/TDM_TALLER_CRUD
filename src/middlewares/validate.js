@@ -8,7 +8,7 @@ export function validateSneaker(req, res, next) {
     for (const field of ["price", "stock"]) {
         const value = body[field];
         if (value === undefined) {
-            if (!isPut) errors.push(`'${field}' es obligatorio`);
+            if (!isPut) errors.push(`${field} es obligatorio`);
             continue;
         }
         
@@ -16,7 +16,7 @@ export function validateSneaker(req, res, next) {
         const n = raw === "" ? NaN : Number(raw);
         
         if (!Number.isFinite(n) || n < 0) {
-            errors.push(`'${field}' debe ser un número mayor o igual a 0`);
+            errors.push(`${field} debe ser un número mayor o igual a 0`);
         } else {
             body[field] = n; 
         }
@@ -26,6 +26,12 @@ export function validateSneaker(req, res, next) {
         if (!isPut) errors.push("Category es obligatorio");
     } else if (!CATEGORIES.includes(body.category)) {
         errors.push(`Category debe ser uno de: ${CATEGORIES.join(", ")}`);
+    }
+
+    for (const field of ["name", "description"]) {
+        if (body[field] !== undefined && typeof body[field] !== "string") {
+            errors.push(`${field} debe ser texto`);
+        }
     }
 
     if (errors.length > 0) {

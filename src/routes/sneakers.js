@@ -22,9 +22,32 @@ router.param("id", (req, res, next, value) => {
     next();
 });
 
-// GET /api/sneakers
+
+// Quita tildes y pasa a minúsculas para comparar
+const normalize = (text) => String(text ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+// GET /api/sneakers?q=...&category=...&sort=price
 router.get("/", (req, res) => {
-    res.json(getAllSneakers());
+    const { q, category, sort } = req.query;
+
+    let result = getAllSneakers();
+
+    if (typeof q === "string" && q.trim()) {
+        const term = normalize(q.trim());
+        result = result.filter(search =>
+            normalize(search.name).includes(term) || normalize(search.description).includes(term)
+        );
+    }
+
+    if (typeof category === "string" && category.trim()) {
+        result = result.filter(search => normalize(search.category) === normalize(category));
+    }
+
+    if (sort === "price") {
+        result = [...result].sort((a, b) => Number(a.price) - Number(b.price));
+    }
+
+    res.json(result);
 });
 
 // GET /api/sneakers/:id
