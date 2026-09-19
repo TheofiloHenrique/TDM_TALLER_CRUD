@@ -38,11 +38,11 @@ tableBody.addEventListener("click", async (e) => {
                 stopEditing();
                 return;
             }
-            const item = await getSneaker(id);
-            fillForm(form, item, submitBtn, cancelBtn);
+            const sneaker = await getSneaker(id);
+            fillForm(form, sneaker, submitBtn, cancelBtn);
             editID = id;
         } catch (err) {
-            console.error("Error cargando item:", err);
+            console.error("Error cargando sneaker:", err);
             showToast(err.message);
         }
     }
@@ -78,7 +78,7 @@ form.addEventListener("submit", async (e) => {
         stopEditing();
         loadSneakers();
     } catch (err) {
-        console.error("Error guardando item:", err);
+        console.error("Error guardando sneaker:", err);
         showToast(err.message);
     }
 });

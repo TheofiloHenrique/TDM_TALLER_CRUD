@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getAllSneakers, findSneaker, insertSneaker, modifySneaker, removeSneaker } from "../db/db.js";
+import { validateSneaker } from "../middlewares/validate.js";
 
 /**
  * Un Router de Express es un "mini servidor" que luego montamos en /api/sneakers.
@@ -34,7 +35,7 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/sneakers
-router.post("/", async (req, res) => {
+router.post("/", validateSneaker, async (req, res) => {
     const { name, description, category, price, stock, image } = req.body ?? {};
 
     if (!name || !name.trim()) {
@@ -42,12 +43,12 @@ router.post("/", async (req, res) => {
     }
 
     const nuevo = await insertSneaker({ name: name.trim(), description: description?.trim(), 
-        category: category.trim() ?? "",price: price, stock: stock, image: image ?? "" });
+        category, price, stock, image: image ?? "" });
     res.status(201).json(nuevo);
 });
 
 // PUT /api/sneakers/:id
-router.put("/:id", async (req, res) => {
+router.put("/:id", validateSneaker, async (req, res) => {
     const { name, description, category, price, stock, image } = req.body ?? {};
 
     if (name !== undefined && !name.trim()) {
@@ -59,8 +60,8 @@ router.put("/:id", async (req, res) => {
     const changes = {};
     if (name !== undefined) changes.name = name.trim();
     if (description !== undefined) changes.description = description.trim();
-    if (category !== undefined) changes.category = category.trim();
-    if (price !== undefined) changes.price = price.trim();
+    if (category !== undefined) changes.category = category;
+    if (price !== undefined) changes.price = price;
     if (stock !== undefined) changes.stock = stock;
     if (image !== undefined) changes.image = image;
 
