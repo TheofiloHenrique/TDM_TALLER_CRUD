@@ -1,10 +1,11 @@
 import { getAllSneakers, getSneaker } from "./services/api.js";
+import { renderCatalogCards, showToast } from "./ui/ui.js";
 
 const catalogContainer = document.getElementById("catalogContainer");
 const detailModal = document.getElementById("detailModal");
 const closeModalBtn = document.getElementById("closeModal");
+const offlineBanner = document.getElementById("offlineBanner");
 
-// Elementos del modal para mostrar los detalles del sneaker
 const modalName = document.getElementById("modalName");
 const modalImg = document.getElementById("modalImg");
 const modalCategory = document.getElementById("modalCategory");
@@ -12,79 +13,105 @@ const modalDescription = document.getElementById("modalDescription");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
 
-// Cargar y renderizar las tarjetas del catálogo dinámicamente
-async function loadCatalog() {
-    // Validar estado de red para el aviso offline requerido (Fase 4.3)
-    if (!navigator.onLine) {
-        const banner = document.getElementById("offlineBanner");
-        if (banner) banner.classList.remove("hidden");
-    }
+/**
+ * Actualiza el aviso de conexión.
+ */
+function updateOnlineStatus() {
+    if (!offlineBanner) return;
 
+    if (navigator.onLine) {
+        offlineBanner.classList.add("hidden");
+    } else {
+        offlineBanner.classList.remove("hidden");
+    }
+}
+
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
+
+/**
+ * Carga los sneakers y delega el render a ui.js.
+ */
+async function loadCatalog() {
     try {
         const sneakers = await getAllSneakers();
-        renderCatalogCards(sneakers);
-    } catch (err) { 
+        renderCatalogCards(sneakers, catalogContainer);
+    } catch (err) {
         console.error("Error cargando el catálogo:", err);
-        const banner = document.getElementById("offlineBanner");
-        if (banner) banner.classList.remove("hidden");
+
+        if (offlineBanner) {
+            offlineBanner.classList.remove("hidden");
+        }
+
+        showToast(
+            "No se pudo cargar el catálogo. Mostrando los datos disponibles."
+        );
     }
 }
 
-// Función para pintar las tarjetas en el DOM
-function renderCatalogCards(sneakers) {
-    catalogContainer.innerHTML = "";
-    
-    sneakers.forEach(sneaker => {
-        const card = document.createElement("div");
-        card.className = "sneaker-card";
-        card.innerHTML = `
-            <div class="card-image-wrapper">
-                <img src="${sneaker.image}" alt="${sneaker.name}">
-            </div>
-            <div class="card-content">
-                <span class="card-category">${sneaker.category}</span>
-                <h3>${sneaker.name}</h3>
-                <p class="card-price">$ ${sneaker.price}</p>
-                <button class="btn-detail" data-id="${sneaker.id}">Ver Detalle</button>
-            </div>
-        `;
-        catalogContainer.appendChild(card);
-    });
-}
-
-// Evento de delegación para abrir el modal al hacer clic en "Ver Detalle"
-catalogContainer.addEventListener("click", async (e) => {
-    const btn = e.target.closest("button");
-    if(!btn || !btn.classList.contains("btn-detail")) return;
-
-    const id = Number(btn.dataset.id);
-
+/**
+ * Abre el modal con el detalle de un sneaker.
+ */
+async function openSneakerDetail(id) {
     try {
         const sneaker = await getSneaker(id);
-        
-        modalName.textContent = sneaker.name;
-        modalImg.src = sneaker.image;
-        modalCategory.textContent = `Categoría: ${sneaker.category}`;
-        modalDescription.textContent = sneaker.description;
-        modalPrice.textContent = `Precio: $ ${sneaker.price}`;
-        modalStock.textContent = `Stock disponible: ${sneaker.stock}`;
 
+        modalName.textContent = sneaker.name ?? "Sin nombre";
+        modalImg.src = sneaker.image ?? "";
+        modalImg.alt = sneaker.name ?? "Sneaker";
+
+        modalCategory.textContent = `Categoría: ${sneaker.category ?? "Sin categoría"}`;
+        modalDescription.textContent =
+            sneaker.description ?? "Sin descripción";
+        modalPrice.textContent = `Precio: $ ${sneaker.price ?? 0}`;
+        modalStock.textContent = `Stock disponible: ${sneaker.stock ?? 0}`;
+
+        detailModal.classList.remove("hidden");
         detailModal.style.display = "flex";
     } catch (err) {
         console.error("Error cargando detalle del sneaker:", err);
-        alert("No se pudo cargar la información detallada.");
+        showToast("No se pudo cargar la información detallada.");
     }
-});
+}
 
-// Eventos para cerrar el modal
-closeModalBtn.addEventListener("click", () => {
+/**
+ * Cierra el modal.
+ */
+function closeModal() {
+    if (!detailModal) return;
+
+    detailModal.classList.add("hidden");
     detailModal.style.display = "none";
-});
+}
 
-window.addEventListener("click", (e) => {
-    if (e.target === detailModal) {
-        detailModal.style.display = "none";
-    }
-});
+if (catalogContainer) {
+    catalogContainer.addEventListener("click", (event) => {
+        const button = event.target.closest(".btn-detail");
 
+        if (!button) return;
+
+        const id = Number(button.dataset.id);
+
+        if (!Number.isInteger(id)) {
+            showToast("Identificador de sneaker inválido.");
+            return;
+        }
+
+        openSneakerDetail(id);
+    });
+}
+
+if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeModal);
+}
+
+if (detailModal) {
+    detailModal.addEventListener("click", (event) => {
+        if (event.target === detailModal) {
+            closeModal();
+        }
+    });
+}
+
+updateOnlineStatus();
 loadCatalog();

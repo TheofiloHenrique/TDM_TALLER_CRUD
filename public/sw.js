@@ -12,12 +12,13 @@
    SERVICE WORKER - OFFLINE READY
    ============================================================ */
 
-const VERSION = "v2"; 
-const SHELL_CACHE = `shell-${VERSION}`;
-const DATA_CACHE = `data-${VERSION}`;
+   const VERSION = "v3";
+   const SHELL_CACHE = `hype-sneakers-shell-${VERSION}`;
+   const DATA_CACHE = `hype-sneakers-data-${VERSION}`;
 
 // Lista limpia de assets (asegúrate de que todos estos archivos existan en tu proyecto)
 const SHELL_ASSETS = [
+    "/",
     "/index.html",
     "/catalog.html",
     "/offline.html",
@@ -39,7 +40,7 @@ self.addEventListener("install", (event) => {
             // Usamos addAll individual o con manejo para ver si alguno falla
             for (const asset of SHELL_ASSETS) {
                 try {
-                    await cache.add(asset);
+                    await cache.add(new Request(asset, { cache: "reload" }));
                 } catch (err) {
                     console.warn(`⚠️ No se pudo cachear el asset: ${asset}`, err);
                 }
