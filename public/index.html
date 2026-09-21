@@ -6,8 +6,7 @@
     <title>Gestión - Hype Sneakers</title>
     <link rel="shortcut icon" href="./img/shoes.png" type="image/png">
     <link rel="stylesheet" href="./css/styles.css">
-    
-    <!-- 1. SCRIPT ANTI-PARPADEO: Se ejecuta de inmediato antes de pintar la página -->
+    <link rel="manifest" href="/manifest.webmanifest">
     <script>
         const savedTheme = localStorage.getItem("tema");
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -19,7 +18,6 @@
 </head>
 <body class="bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-gray-100 font-sans min-h-screen">
 
-    <!-- Barra de Navegación -->
     <nav class="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 shadow-sm py-4 px-6 mb-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <span class="text-xl font-bold text-orange-500">Hype Sneakers</span>
@@ -27,7 +25,6 @@
                 <a href="./index.html" class="btn btn-primary text-sm">Gestión</a>
                 <a href="./catalog.html" class="btn btn-outline text-sm">Catálogo</a>
                 
-                <!-- 2. BOTÓN DE MODO OSCURO CON ACCESIBILIDAD -->
                 <button id="themeToggle" class="btn btn-outline text-sm px-3 py-2" aria-label="Cambiar modo oscuro">
                     <span id="themeIcon">🌙</span>
                 </button>
@@ -36,6 +33,11 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 space-y-8 pb-12">
+        <!-- ⚠️ AVISO OFFLINE -->
+        <div id="offlineBanner" class="hidden bg-orange-500/10 border border-orange-500 text-orange-500 p-3 rounded-xl text-center text-sm font-medium">
+            ⚠️ Sin conexión — mostrando datos guardados en caché
+        </div>
+
         <h1 class="text-2xl font-bold text-orange-500">Gestión de Sneakers</h1>
 
         <!-- Formulario -->
@@ -71,7 +73,6 @@
             </form>
         </section>
 
-        <!-- Tabla -->
         <section class="card bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
             <h2 class="text-xl font-bold mb-4 text-orange-500">Inventario</h2>
             <div class="overflow-x-auto">
@@ -93,20 +94,15 @@
             </div>
         </section>
     </main>
-
-    <!-- 3. SCRIPT DE INTERACCIÓN DEL BOTÓN -->
+    
     <script>
         const themeToggleBtn = document.getElementById("themeToggle");
         const themeIcon = document.getElementById("themeIcon");
-
-        // Ajustar el icono inicial según la clase que determinó el script del head
         if (document.documentElement.classList.contains("dark")) {
             themeIcon.textContent = "☀️";
         } else {
             themeIcon.textContent = "🌙";
         }
-
-        // Evento para alternar modo claro/oscuro
         themeToggleBtn.addEventListener("click", () => {
             const isDark = document.documentElement.classList.toggle("dark");
             localStorage.setItem("tema", isDark ? "oscuro" : "claro");
@@ -114,6 +110,7 @@
         });
     </script>
 
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="/js/main.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
 </body>
 </html>

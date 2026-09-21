@@ -8,14 +8,16 @@
    Ojo: aquí NO existe `window` ni `document`. Solo `self`.
    ============================================================ */
 
-// Al cambiar la versión, el navegador instala un SW nuevo y borra las cachés viejas.
-const VERSION = "v1";
-const SHELL_CACHE = `shell-${VERSION}`; // archivos de la app (HTML, CSS, JS, iconos)
-const DATA_CACHE = `data-${VERSION}`; // respuestas de la API
+/* ============================================================
+   SERVICE WORKER - OFFLINE READY
+   ============================================================ */
 
-// El "app shell": lo mínimo para que la app abra sin red.
+const VERSION = "v2"; 
+const SHELL_CACHE = `shell-${VERSION}`;
+const DATA_CACHE = `data-${VERSION}`;
+
+// Lista limpia de assets (asegúrate de que todos estos archivos existan en tu proyecto)
 const SHELL_ASSETS = [
-    "/",
     "/index.html",
     "/catalog.html",
     "/offline.html",
@@ -30,61 +32,57 @@ const SHELL_ASSETS = [
     "/icons/icon-512.png"
 ];
 
-/* ---- 1. INSTALL: se ejecuta una vez, al registrar el SW ---- */
+/* ---- 1. INSTALL: Guarda el App Shell ---- */
 self.addEventListener("install", (event) => {
-    // waitUntil mantiene vivo el SW hasta que la promesa termine.
     event.waitUntil(
-        caches
-            .open(SHELL_CACHE)
-            .then((cache) => cache.addAll(SHELL_ASSETS))
-            // skipWaiting activa el SW nuevo sin esperar a que cierren las pestañas.
-            .then(() => self.skipWaiting())
+        caches.open(SHELL_CACHE).then(async (cache) => {
+            // Usamos addAll individual o con manejo para ver si alguno falla
+            for (const asset of SHELL_ASSETS) {
+                try {
+                    await cache.add(asset);
+                } catch (err) {
+                    console.warn(`⚠️ No se pudo cachear el asset: ${asset}`, err);
+                }
+            }
+        }).then(() => self.skipWaiting())
     );
 });
 
-/* ---- 2. ACTIVATE: limpieza de versiones anteriores ---- */
+/* ---- 2. ACTIVATE: Limpia cachés viejas ---- */
 self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches
-            .keys()
-            .then((keys) =>
-                Promise.all(
-                    keys
-                        .filter((key) => key !== SHELL_CACHE && key !== DATA_CACHE)
-                        .map((key) => caches.delete(key))
-                )
+        caches.keys().then((keys) =>
+            Promise.all(
+                keys
+                    .filter((key) => key !== SHELL_CACHE && key !== DATA_CACHE)
+                    .map((key) => caches.delete(key))
             )
-            // claim() hace que el SW controle las pestañas ya abiertas.
-            .then(() => self.clients.claim())
+        ).then(() => self.clients.claim())
     );
 });
 
-/* ---- 3. FETCH: se dispara en CADA petición de la app ---- */
+/* ---- 3. FETCH: Intercepta peticiones ---- */
 self.addEventListener("fetch", (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
-    // Solo manejamos peticiones GET de nuestro propio origen.
     if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
-    // --- Estrategia A: network-first para la API ---
-    // Los datos deben ser frescos; la caché es solo el plan B si no hay red.
+    // API: Network First
     if (url.pathname.startsWith("/api/")) {
         event.respondWith(networkFirst(request));
         return;
     }
 
-    // --- Estrategia B: cache-first para el resto (HTML, CSS, JS, iconos) ---
-    // Estos archivos casi no cambian: responder desde caché es instantáneo.
+    // Resto de la app: Cache First
     event.respondWith(cacheFirst(request));
 });
 
-/** Intenta la red; si falla, responde con la última copia guardada. */
 async function networkFirst(request) {
     const cache = await caches.open(DATA_CACHE);
     try {
         const response = await fetch(request);
-        cache.put(request, response.clone()); // guardamos una copia para el futuro
+        if (response.ok) cache.put(request, response.clone());
         return response;
     } catch {
         const cached = await cache.match(request);
@@ -97,19 +95,21 @@ async function networkFirst(request) {
     }
 }
 
-/** Responde desde caché; si no está, va a la red y la guarda. */
 async function cacheFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
 
     try {
         const response = await fetch(request);
-        const cache = await caches.open(SHELL_CACHE);
-        cache.put(request, response.clone());
+        // Solo guardamos si la respuesta es válida
+        if (response && response.status === 200 && response.type === 'basic') {
+            const cache = await caches.open(SHELL_CACHE);
+            cache.put(request, response.clone());
+        }
         return response;
     } catch {
-        // Si era una navegación (abrir una página), mostramos la página de offline.
-        if (request.mode === "navigate") {
+        // Si no hay red y es una página web, devolvemos el offline.html guardado en caché
+        if (request.mode === "navigate" || request.headers.get("accept")?.includes("text/html")) {
             const offline = await caches.match("/offline.html");
             if (offline) return offline;
         }
