@@ -16,13 +16,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -n API,CSS -c cyan,magenta \"npm:dev:server\" \"npm:dev:css\"",
-        "dev:server": "nodemon src/server.js",
-        "dev:css": "@tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --watch",
-        "build": "@tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --minify",
-        "start": "node src/server.js",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "format": "prettier --write ."
+    "dev:server": "nodemon src/server.js",
+    "dev:css": "npx @tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --watch",
+    "build": "npx @tailwindcss/cli -i ./src/styles/input.css -o ./public/css/styles.css --minify",
+    "start": "node src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "cors": "^2.8.6",
