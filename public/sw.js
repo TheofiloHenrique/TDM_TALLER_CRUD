@@ -12,7 +12,7 @@
    SERVICE WORKER - OFFLINE READY
    ============================================================ */
 
-   const VERSION = "v3";
+   const VERSION = "v8";
    const SHELL_CACHE = `hype-sneakers-shell-${VERSION}`;
    const DATA_CACHE = `hype-sneakers-data-${VERSION}`;
 
@@ -30,7 +30,8 @@ const SHELL_ASSETS = [
     "/js/ui/ui.js",
     "/manifest.webmanifest",
     "/icons/icon-192.png",
-    "/icons/icon-512.png"
+    "/icons/icon-512.png",
+    "/icons/icon-512-maskable.png"
 ];
 
 /* ---- 1. INSTALL: Guarda el App Shell ---- */

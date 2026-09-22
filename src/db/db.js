@@ -28,8 +28,15 @@ export function findSneaker(id) {
 
 /** Crea un sneaker y lo persiste. */
 export async function insertSneaker({ name, description , category , price , stock , image }) {
+    
+    const sneakers = db.data.sneakers;
+
+    const lastId = sneakers.length > 0
+        ? Math.max(...sneakers.map((sneaker) => Number(sneaker.id)))
+        : 0;
+    
     const sneaker = { 
-        id: Date.now(), 
+        id: lastId +1, 
         name, 
         description: description ?? "", 
         category: category ?? "" , 

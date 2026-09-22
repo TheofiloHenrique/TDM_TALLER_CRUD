@@ -1,8 +1,3 @@
-/**
- * Escapa texto antes de insertarlo en HTML.
- * Evita que datos provenientes del usuario o de la API
- * sean interpretados como código HTML.
- */
 function escapeHtml(value) {
     return String(value ?? "").replace(
         /[&<>"']/g,
@@ -107,23 +102,120 @@ export function renderSneakers(sneakers, tableBody) {
 }
 
 /**
+ * Renderiza el estado de carga del catálogo.
+ */
+export function renderCatalogLoading(catalogContainer) {
+    if (!catalogContainer) return;
+
+    catalogContainer.innerHTML = `
+        <div class="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div class="card animate-pulse">
+                <div class="card-image-wrapper"></div>
+                <div class="h-4 w-24 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-3 h-6 w-3/4 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-full rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-5/6 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-4 h-7 w-28 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-5 h-10 w-full rounded-2xl bg-gray-200 dark:bg-zinc-800"></div>
+            </div>
+
+            <div class="card animate-pulse hidden sm:flex">
+                <div class="card-image-wrapper"></div>
+                <div class="h-4 w-24 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-3 h-6 w-3/4 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-full rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-5/6 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-4 h-7 w-28 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-5 h-10 w-full rounded-2xl bg-gray-200 dark:bg-zinc-800"></div>
+            </div>
+
+            <div class="card animate-pulse hidden lg:flex">
+                <div class="card-image-wrapper"></div>
+                <div class="h-4 w-24 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-3 h-6 w-3/4 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-full rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-2 h-4 w-5/6 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-4 h-7 w-28 rounded bg-gray-200 dark:bg-zinc-800"></div>
+                <div class="mt-5 h-10 w-full rounded-2xl bg-gray-200 dark:bg-zinc-800"></div>
+            </div>
+
+        </div>
+    `;
+}
+
+/**
+ * Renderiza el estado de catálogo vacío.
+ * Se muestra cuando no existen sneakers en el backend.
+ */
+export function renderCatalogEmpty(catalogContainer) {
+    if (!catalogContainer) return;
+
+    catalogContainer.innerHTML = `
+        <div class="col-span-full py-16 text-center">
+            <div class="text-5xl mb-4">👟</div>
+
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                No hay sneakers disponibles
+            </h2>
+
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Todavía no hay productos registrados en el catálogo.
+            </p>
+        </div>
+    `;
+}
+
+/**
+ * Renderiza el estado de búsqueda sin resultados.
+ */
+export function renderCatalogNoResults(catalogContainer) {
+    if (!catalogContainer) return;
+
+    catalogContainer.innerHTML = `
+        <div class="col-span-full py-16 text-center">
+            <div class="text-5xl mb-4">🔎</div>
+
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                No hay resultados
+            </h2>
+
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                No encontramos sneakers que coincidan con tu búsqueda o filtros.
+            </p>
+        </div>
+    `;
+}
+
+/**
+ * Renderiza el estado de error.
+ */
+export function renderCatalogError(catalogContainer) {
+    if (!catalogContainer) return;
+
+    catalogContainer.innerHTML = `
+        <div class="col-span-full py-16 text-center">
+            <div class="text-5xl mb-4">⚠️</div>
+
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                No se pudo cargar el catálogo
+            </h2>
+
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Ocurrió un problema al obtener los sneakers. Intenta nuevamente.
+            </p>
+        </div>
+    `;
+}
+
+/**
  * Renderiza las tarjetas del catálogo.
  */
 export function renderCatalogCards(sneakers, catalogContainer) {
     if (!catalogContainer) return;
 
     if (sneakers.length === 0) {
-        catalogContainer.innerHTML = `
-            <div class="col-span-full py-12 text-center">
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    No hay sneakers disponibles.
-                </p>
-
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Prueba con otros filtros o términos de búsqueda.
-                </p>
-            </div>
-        `;
+        renderCatalogEmpty(catalogContainer);
         return;
     }
 
@@ -180,9 +272,6 @@ export function renderCatalogCards(sneakers, catalogContainer) {
         .join("");
 }
 
-/**
- * Rellena el formulario con los datos del sneaker seleccionado.
- */
 export function fillForm(form, sneaker, submitBtn, cancelBtn) {
     form.querySelector("#name").value = sneaker.name ?? "";
     form.querySelector("#description").value = sneaker.description ?? "";
@@ -191,18 +280,10 @@ export function fillForm(form, sneaker, submitBtn, cancelBtn) {
     form.querySelector("#stock").value = sneaker.stock ?? "";
     form.querySelector("#image").value = sneaker.image ?? "";
 
-    if (submitBtn) {
-        submitBtn.textContent = "Guardar cambios";
-    }
-
-    if (cancelBtn) {
-        cancelBtn.hidden = false;
-    }
+    if (submitBtn) submitBtn.textContent = "Guardar cambios";
+    if (cancelBtn) cancelBtn.hidden = false;
 }
 
-/**
- * Limpia el formulario y devuelve el botón al estado inicial.
- */
 export function resetForm(form, submitBtn, cancelBtn) {
     form.reset();
 
@@ -215,10 +296,6 @@ export function resetForm(form, submitBtn, cancelBtn) {
     }
 }
 
-/**
- * Muestra un aviso flotante.
- * Reemplaza los alert() del navegador.
- */
 export function showToast(message, type = "error") {
     const colors = {
         error: "bg-red-600",

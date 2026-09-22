@@ -46,13 +46,3 @@ window.addEventListener("appinstalled", () => {
     if (installBtn) installBtn.hidden = true;
 });
 
-/* ---- 3. Indicador de conexión ---- */
-const offlineBadge = document.getElementById("offlineBadge");
-
-function updateOnlineStatus() {
-    if (offlineBadge) offlineBadge.hidden = navigator.onLine;
-}
-
-window.addEventListener("online", updateOnlineStatus);
-window.addEventListener("offline", updateOnlineStatus);
-updateOnlineStatus();

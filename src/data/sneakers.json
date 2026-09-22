@@ -1,11 +1,20 @@
 {
   "sneakers": [
     {
+      "id": 1,
+      "name": "Air Jordan 1 Retro High 'Lost & Found'",
+      "description": "Edición icónica inspirada en el stock de 1985...",
+      "category": "Masculino",
+      "price": 10000,
+      "stock": 5,
+      "image": "https://cdn.flightclub.com/3000/TEMPLATE/307016/1.jpg"
+    },
+    {
       "id": 2,
       "name": "Adidas Yeezy Boost 350 V2 'Zebra'",
       "description": "Diseño vanguardista con patrón Primeknit monocromático, franja lateral distintiva SPLY-350 y suela translúcida con amortiguación Boost.",
       "price": 980000,
-      "category": "Yeezy",
+      "category": "Masculino",
       "stock": 8,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc9Ru3hjfrsUBTsOUD4eVVRwycIjIa31uLA971hB2f1w&s=10"
     },
@@ -14,52 +23,52 @@
       "name": "Nike Dunk Low 'Panda'",
       "description": "El clásico versátil de perfil bajo con bloques de color blanco y negro, perfecto para cualquier outfit urbano y uso diario.",
       "price": 550000,
-      "category": "Nike Dunk",
-      "stock": 12,
+      "category": "Masculino",
+      "stock": 17,
       "image": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400"
     },
     {
       "name": "Adidas Boost Run",
       "description": "El Adidas Boost Run es un tenis desarrollado para ofrecer máximo confort, amortiguación y retorno de energía durante carreras y actividades diarias. Con un diseño deportivo moderno y la tecnología Boost, proporciona una experiencia de uso suave y receptiva.",
-      "category": "Boost",
+      "category": "Masculino",
       "price": 235000,
-      "stock": "7",
+      "stock": 7,
       "image": "https://assets.adidas.com/images/h_2000,f_auto,q_auto,fl_lossy,c_fill,g_auto/9b495d15560e4238ada7b4c51d5abc35_9366/Tenis_BOOST_RUN_M_Preto_KJ0966_01_00_standard.jpg",
       "id": 4
     },
     {
       "name": "Adidas Boost Run",
       "description": "El Adidas Boost Run es un tenis desarrollado para ofrecer máximo confort, amortiguación y retorno de energía durante carreras y actividades diarias. Con un diseño deportivo moderno y la tecnología Boost, proporciona una experiencia de uso suave y receptiva.",
-      "category": "Boost",
-      "price": "235000",
-      "stock": "7",
+      "category": "Masculino",
+      "price": 235000,
+      "stock": 7,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBRaIq5NtQssPHjOVO0R0T7B56y9bCOT1fz0zYRozEew&s=10",
       "id": 5
     },
     {
       "name": "Nike Air Force 1",
       "description": "Las Nike Air Force 1 combinan una estructura robusta de cuero premium con una puntera perforada transpirable. Su mediasuela gruesa oculta la icónica amortiguación Nike Air para ofrecer una pisada suave y elástica. El diseño se remata con un cuello acolchado de perfil bajo y una suela de goma con puntos de giro de alta tracción urbana.",
-      "category": "Nike Air Force 1",
-      "price": "235000",
-      "stock": "7",
+      "category": "Femenino",
+      "price": 235000,
+      "stock": 7,
       "image": "https://nikeco.vtexassets.com/arquivos/ids/935434-800-auto?v=639021049767100000&width=800&height=auto&aspect=true",
       "id": 6
     },
     {
       "name": "Nike Air Force 1",
       "description": "Las Nike Air Force 1 combinan una estructura robusta de cuero premium con una puntera perforada transpirable. Su mediasuela gruesa oculta la icónica amortiguación Nike Air para ofrecer una pisada suave y elástica. El diseño se remata con un cuello acolchado de perfil bajo y una suela de goma con puntos de giro de alta tracción urbana.",
-      "category": "Nike Air Force 1",
-      "price": "235000",
-      "stock": "7",
+      "category": "Masculino",
+      "price": 235000,
+      "stock": 7,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAnVndq7eEew6fMsnTZArQPY1KGsy4NZBy2n1oWmEWmg&s=10",
       "id": 7
     },
     {
       "name": "Adidas Run",
       "description": "El Adidas Boost Run es un tenis desarrollado para ofrecer máximo confort, amortiguación y retorno de energía durante carreras y actividades diarias. Con un diseño deportivo moderno y la tecnología Boost, proporciona una experiencia de uso suave y receptiva.",
-      "category": "Boost",
-      "price": "235000",
-      "stock": "7",
+      "category": "Infantil",
+      "price": 235000,
+      "stock": 7,
       "image": "https://assets.adidas.com/images/h_2000,f_auto,q_auto,fl_lossy,c_fill,g_auto/9b495d15560e4238ada7b4c51d5abc35_9366/Tenis_BOOST_RUN_M_Preto_KJ0966_01_00_standard.jpg",
       "id": 8
     }

@@ -7,25 +7,50 @@
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="shortcut icon" href="./img/shoes.png" type="image/png">
     <link rel="manifest" href="/manifest.webmanifest">
+
     <script>
         const savedTheme = localStorage.getItem("tema");
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         const currentTheme = savedTheme ?? (prefersDark ? "oscuro" : "claro");
+
         if (currentTheme === "oscuro") {
             document.documentElement.classList.add("dark");
         }
     </script>
 </head>
+
 <body class="bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-gray-100 font-sans min-h-screen">
 
     <nav class="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 shadow-sm py-4 px-6 mb-8">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <span class="text-xl font-bold text-orange-500">Hype Sneakers</span>
+            <span class="text-xl font-bold text-orange-500">
+                Hype Sneakers
+            </span>
+
             <div class="flex items-center gap-4">
-                <a href="index.html" class="btn btn-outline text-sm">Gestión</a>
-                <a href="catalog.html" class="btn btn-primary text-sm">Catálogo</a>
-                
-                <button id="themeToggle" class="btn btn-outline text-sm px-3 py-2" aria-label="Cambiar modo oscuro">
+                <a href="index.html" class="btn btn-outline text-sm">
+                    Gestión
+                </a>
+
+                <a href="catalog.html" class="btn btn-primary text-sm">
+                    Catálogo
+                </a>
+
+                <button
+                    id="installBtn"
+                    class="btn btn-primary text-sm"
+                    type="button"
+                    hidden
+                >
+                    Instalar app
+                </button>
+
+                <button
+                    id="themeToggle"
+                    class="btn btn-outline text-sm px-3 py-2"
+                    aria-label="Cambiar modo oscuro"
+                    type="button"
+                >
                     <span id="themeIcon">🌙</span>
                 </button>
             </div>
@@ -33,36 +58,152 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 space-y-8 pb-12">
-        <!-- ⚠️ AVISO OFFLINE (Requerido por el ítem 4.3) -->
-        <div id="offlineBanner" class="hidden bg-orange-500/10 border border-orange-500 text-orange-500 p-3 rounded-xl text-center text-sm font-medium">
+
+        <!-- ⚠️ AVISO OFFLINE -->
+        <div
+            id="offlineBanner"
+            class="hidden bg-orange-500/10 border border-orange-500 text-orange-500 p-3 rounded-xl text-center text-sm font-medium"
+        >
             ⚠️ Sin conexión — mostrando datos guardados en caché
         </div>
 
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 class="text-2xl font-bold text-orange-500">Catálogo de Sneakers</h1>
-            
-            <div class="w-full md:w-auto flex gap-2">
-                <input type="text" id="searchInput" class="input text-sm" placeholder="Buscar sneaker...">
+        <!-- Encabezado y filtros -->
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+
+            <div>
+                <h1 class="text-2xl font-bold text-orange-500">
+                    Catálogo de Sneakers
+                </h1>
+
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Encuentra tu próximo par favorito.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:max-w-3xl">
+
+                <!-- Búsqueda -->
+                <div>
+                    <label
+                        for="searchInput"
+                        class="block mb-1.5 text-sm font-medium"
+                    >
+                        Buscar
+                    </label>
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        class="input text-sm"
+                        placeholder="Nombre o descripción..."
+                    >
+                </div>
+
+                <!-- Categoría -->
+                <div>
+                    <label
+                        for="categoryFilter"
+                        class="block mb-1.5 text-sm font-medium"
+                    >
+                        Categoría
+                    </label>
+
+                    <select
+                        id="categoryFilter"
+                        class="input text-sm"
+                    >
+                        <option value="">Todas las categorías</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Infantil">Infantil</option>
+                    </select>
+                </div>
+
+                <!-- Ordenamiento -->
+                <div>
+                    <label
+                        for="sortFilter"
+                        class="block mb-1.5 text-sm font-medium"
+                    >
+                        Ordenar
+                    </label>
+
+                    <select
+                        id="sortFilter"
+                        class="input text-sm"
+                    >
+                        <option value="">Predeterminado</option>
+                        <option value="price">
+                            Precio: menor a mayor
+                        </option>
+                    </select>
+                </div>
+
             </div>
         </div>
 
-        <div id="catalogContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <!-- Catálogo -->
+        <div
+            id="catalogContainer"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+
     </main>
 
-    <div id="detailModal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50" style="display: none;">
-        <div class="card bg-white dark:bg-zinc-900 max-w-lg w-full relative p-6 space-y-4">
-            <span id="closeModal" class="absolute top-3 right-4 text-2xl cursor-pointer font-bold hover:text-orange-500">&times;</span>
-            <h2 id="modalName" class="text-xl font-bold text-orange-500"></h2>
-            <img id="modalImg" src="" alt="Sneaker" class="w-full h-48 object-cover rounded-lg">
+    <!-- Modal de detalle -->
+    <div
+        id="detailModal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"
+        style="display: none;"
+    >
+        <div
+            class="card bg-white dark:bg-zinc-900 max-w-lg w-full relative p-6 space-y-4"
+        >
+
+            <button
+                id="closeModal"
+                type="button"
+                class="absolute top-3 right-4 text-2xl cursor-pointer font-bold hover:text-orange-500"
+                aria-label="Cerrar detalle"
+            >
+                &times;
+            </button>
+
+            <h2
+                id="modalName"
+                class="text-xl font-bold text-orange-500"
+            ></h2>
+
+            <img
+                id="modalImg"
+                src=""
+                alt="Sneaker"
+                class="w-full h-48 object-cover rounded-lg"
+            >
+
             <p id="modalCategory" class="badge"></p>
-            <p id="modalDescription" class="text-sm text-gray-600 dark:text-gray-300"></p>
+
+            <p
+                id="modalDescription"
+                class="text-sm text-gray-600 dark:text-gray-300"
+            ></p>
+
             <div class="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-zinc-800">
-                <p id="modalPrice" class="text-lg font-bold"></p>
-                <p id="modalStock" class="text-sm text-gray-500"></p>
+                <p
+                    id="modalPrice"
+                    class="text-lg font-bold"
+                ></p>
+
+                <p
+                    id="modalStock"
+                    class="text-sm text-gray-500"
+                ></p>
             </div>
+
         </div>
     </div>
 
+    <!-- Tema -->
     <script>
         const themeToggleBtn = document.getElementById("themeToggle");
         const themeIcon = document.getElementById("themeIcon");
@@ -72,14 +213,28 @@
         } else {
             themeIcon.textContent = "🌙";
         }
+
         themeToggleBtn.addEventListener("click", () => {
             const isDark = document.documentElement.classList.toggle("dark");
-            localStorage.setItem("tema", isDark ? "oscuro" : "claro");
+
+            localStorage.setItem(
+                "tema",
+                isDark ? "oscuro" : "claro"
+            );
+
             themeIcon.textContent = isDark ? "☀️" : "🌙";
         });
     </script>
 
-    <script type="module" src="./js/catalog.js"></script>
-    <script type="module" src="/js/pwa.js"></script>
+    <script
+        type="module"
+        src="./js/catalog.js"
+    ></script>
+
+    <script
+        type="module"
+        src="/js/pwa.js"
+    ></script>
+
 </body>
 </html>
